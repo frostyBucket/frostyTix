@@ -1,0 +1,319 @@
+body, html {
+    margin: 0;
+    background-color: rgb(20, 20, 20);
+}
+
+p {
+    color: white;
+}
+
+h4 {
+    color: white;
+}
+
+.header {
+    height: 14%;
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: visible;
+    background-color: black;
+    border-bottom-width: thin;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(242, 242, 242, 0.39);
+}
+
+.header-words {
+    font-family: "Arial";
+    color: white;
+    float: center;
+    align-self: center;
+}
+
+.back-button {
+    align-self: center;
+    margin-left: 2%;
+    font-size: 130%;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.online-users {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.online-users p {
+    color: white;
+}
+
+.sidebar {
+    bottom: 1%;
+    left: 1%;
+    top: 16%;
+    position: absolute;
+    border-style: solid;
+    border-color: rgba(242, 242, 242, 0.39);
+    border-width: thin;
+    width: 10%;
+    box-sizing: border-box;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.create-ticket {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 10px 4px;
+    margin: 0;
+}
+
+.invite-user-button {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 10px 4px;
+    margin: 0;
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  z-index:9999;
+  align-items: center;
+}
+
+.popup {
+    background: black;
+    border-style:outset;
+    border-color:white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-height: 90%;
+    overflow-y:scroll;
+    scrollbar-width:none;
+    text-align: center;
+}
+
+.popup textarea {
+    border-radius: 40px;
+    font-size: 105%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    resize: none;
+}
+
+.popup input[type="text"] {
+    border-radius: 40px;
+    font-size: 105%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 80%;
+    box-sizing: border-box;
+}
+
+.popup p {
+    font-weight: bold;
+    margin-right: auto;
+    margin-left: auto;
+    display: inline-block;
+}
+
+.invite-code-display {
+    display: block;
+    font-size: 150%;
+    letter-spacing: 4px;
+    color: rgb(5, 191, 138);
+    background-color: rgb(30, 30, 30);
+    border-radius: 8px;
+    padding: 3%;
+    margin: 2% auto;
+    width: 80%;
+}
+
+.popup select {
+    border-radius: 40px;
+    text-align: center;
+    padding: 2%;
+}
+
+.popup label {
+    font-weight: bold;
+    color: white;
+}
+
+.popup button {
+    padding: 2%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    font-weight: bold;
+    border-radius: 40px;
+}
+
+.popup h3 {
+    color: white;
+}
+
+.tix-container {
+    position: absolute;
+    top: 16%;
+    left: 12%;
+    right: 1%;
+    bottom: 1%;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: auto;
+}
+
+.tix-container div {
+    margin-left: auto;
+    margin-right: auto;
+    width: 99%;
+    text-align: center;
+}
+
+.actual-ticket-container {
+    width: 100%;
+    height: 88%; 
+    background-color: rgb(40, 40, 40);
+    display: grid;
+    grid-template-columns: (repeat(3, 1fr));
+    gap: 10px;
+    grid-auto-rows: 20%;
+    padding-top: 2%;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.ticket-card {
+    width: 90%;
+    background-color: rgb(5, 191, 138);
+    border-radius: 18px;
+    color: black;
+    border-color: rgb(164, 255, 229);
+    border-width: medium;
+    border-style: solid;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.ticket-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.ticket-card.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
+
+.actual-ticket-container.drag-over {
+    background-color: rgb(55, 55, 55);
+}
+
+.ticket-title {
+    font-weight: bold;
+    font-size: 110%;
+    margin: 0 0 6px 0;
+    color: black;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ticket-desc {
+    color: rgba(0, 0, 0, 0.75);
+    font-weight: normal;
+    font-size: 90%;
+    margin: 0;
+    flex-grow: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.ticket-footer {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.ticket-priority-badge {
+    font-weight: bold;
+    font-size: 75%;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.25);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ticket-card.priority-high .ticket-priority-badge {
+    background-color: rgb(200, 40, 40);
+}
+
+.ticket-card.priority-medium .ticket-priority-badge {
+    background-color: rgb(200, 150, 20);
+}
+
+.ticket-card.priority-low .ticket-priority-badge {
+    background-color: rgb(40, 110, 200);
+}
+
+.ticket-assigned {
+    font-size: 80%;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 55%;
+}

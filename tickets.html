@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Frosty Tix</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+      <div class="popupOverlay" id="ticketPop">
+        <div class="popup" id="popup">
+            <h3>New Ticket</h3>
+            <label>Title</label>
+            <textarea placeholder="Title of Ticket" id="title-input"></textarea>
+            <label>Description</label>
+            <textarea placeholder="Ticket Description" id="description-input"></textarea>
+            <p>Priority: </p>
+            <select id="priority-input">
+                <option>HIGH</option>
+                <option>MEDIUM</option>
+                <option>LOW</option>
+            </select>
+            <br></br>
+            <p>Assigned To: </p>
+            <select id="assigned-to-input">
+                <option>None</option>
+            </select>
+            <div>
+                <button id="cancel-button">Cancel</button>
+                <button id="ticket-button">Create</button>
+            </div>
+        </div>
+    </div>
+      <div class="popupOverlay" id="editPop">
+        <div class="popup" id="editPopup">
+            <h3>Edit Ticket</h3>
+            <label>Title</label>
+            <textarea placeholder="Title of Ticket" id="edit-title-input"></textarea>
+            <label>Description</label>
+            <textarea placeholder="Ticket Description" id="edit-description-input"></textarea>
+            <p>Priority: </p>
+            <select id="edit-priority-input">
+                <option>HIGH</option>
+                <option>MEDIUM</option>
+                <option>LOW</option>
+            </select>
+            <br></br>
+            <p>Assigned To: </p>
+            <select id="edit-assigned-to-input">
+                <option>None</option>
+            </select>
+            <div>
+                <button id="delete-button">Delete</button>
+                <button id="edit-cancel-button">Cancel</button>
+                <button id="save-button">Save</button>
+            </div>
+        </div>
+    </div>
+      <div class="popupOverlay" id="invitePop">
+        <div class="popup" id="inviteUserPopup">
+            <h3>Invite User</h3>
+            <p>Share this code:</p>
+            <p class="invite-code-display" id="invite-code-display">------</p>
+            <label>Invite by Email</label>
+            <input type="text" placeholder="user@example.com" id="invite-email-input">
+            <div>
+                <button id="invite-close-button">Close</button>
+                <button id="invite-send-button">Invite</button>
+            </div>
+        </div>
+    </div>
+      <div class="header">
+          <button class="back-button" id="back-button" title="Back to Launchpad">&#8592;</button>
+          <p class="header-words" id="welcome" style="margin-left: 2%;">Welcome, USER</p>
+          <p class="header-words" id="title" style="margin-left: auto; margin-right: auto">TITLE</p>
+      </div>
+      <div class="sidebar" id="sidebar">
+          <div class="online-users">
+              <p>Online Users</p>
+              <div class="user-div" id="user-div">
+                  <ul id="user-list" class="user-list"></ul>
+              </div>
+          </div>
+          <button class="invite-user-button" id="invite-user-button">Invite User</button>
+          <button class="create-ticket" id="create-ticket">New Ticket</button>
+      </div>
+      <div id="tix-container" class="tix-container">
+          <div class="created-container">
+              <h4>Created</h4>
+              <div class="actual-ticket-container" id="created-container"></div>
+          </div>
+          <div class="in-progress-container">
+              <h4>In Progress</h4>
+              <div class="actual-ticket-container" id="in-progress-container"></div>
+          </div>
+          <div class="completed-container">
+              <h4>Completed</h4>
+              <div class="actual-ticket-container" id="completed-container"></div>
+          </div>
+      </div>
+      
+    <script type="module" src="/src/renderer.js"></script>
+  </body>
+</html>

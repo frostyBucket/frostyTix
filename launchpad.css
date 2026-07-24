@@ -1,0 +1,219 @@
+.launchpad-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.welcome-corner {
+    position: absolute;
+    top: 3%;
+    left: 2%;
+}
+
+.welcome-message {
+    color: white;
+    font-family: "Arial";
+    margin: 0;
+}
+
+.create-board-button {
+    display: block;
+    margin-top: 4%;
+    padding: 3% 6%;
+    font-weight: bold;
+    border-radius: 30px;
+}
+
+.login-button {
+    position: absolute;
+    top: 3%;
+    right: 2%;
+    padding: 2%;
+    font-weight: bold;
+    border-radius: 30px;
+}
+
+.boards-box {
+    position: absolute;
+    top: 22%;
+    bottom: 45%;
+    left: 2%;
+    width: 30%;
+    background-color: rgb(30, 30, 30);
+    border-style: solid;
+    border-color: rgba(242, 242, 242, 0.39);
+    border-width: thin;
+    border-radius: 12px;
+    padding: 2%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.boards-box h4 {
+    color: white;
+    margin: 0 0 4% 0;
+    text-align: center;
+}
+
+.boards-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.boards-list li {
+    background-color: rgb(50, 50, 50);
+    color: white;
+    border-radius: 8px;
+    padding: 4%;
+    margin-bottom: 6%;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.board-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.board-delete-icon {
+    background: none;
+    border: none;
+    padding: 2px;
+    margin: 0;
+    color: rgb(220, 60, 60);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.board-delete-icon:hover {
+    color: rgb(255, 90, 90);
+}
+
+.boards-list li:hover {
+    background-color: rgb(70, 70, 70);
+}
+
+.boards-list .empty-state {
+    display: block;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: normal;
+    text-align: center;
+    background-color: transparent;
+    cursor: default;
+}
+
+.boards-list .empty-state:hover {
+    background-color: transparent;
+}
+
+.invites-box {
+    position: absolute;
+    bottom: 3%;
+    left: 2%;
+    width: 30%;
+    height: 40%;
+    background-color: rgb(30, 30, 30);
+    border-style: solid;
+    border-color: rgba(242, 242, 242, 0.39);
+    border-width: thin;
+    border-radius: 12px;
+    padding: 2%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.invites-box h4 {
+    color: white;
+    margin: 0 0 4% 0;
+    text-align: center;
+}
+
+.invites-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.invites-list li {
+    background-color: rgb(50, 50, 50);
+    color: white;
+    border-radius: 8px;
+    padding: 4%;
+    margin-bottom: 6%;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.invites-list li:hover {
+    background-color: rgb(70, 70, 70);
+}
+
+.join-code-button {
+    margin-top: 4%;
+    padding: 3%;
+    font-weight: bold;
+    border-radius: 30px;
+    align-self: center;
+    width: 80%;
+}
+
+.popup input[type="text"] {
+    border-radius: 40px;
+    font-size: 105%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    width: 80%;
+    box-sizing: border-box;
+}
+
+.popup .checkbox-label {
+    display: block;
+    font-weight: normal;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.popup .checkbox-label input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+.graph-placeholder {
+    position: absolute;
+    bottom: 3%;
+    right: 2%;
+    width: 45%;
+    height: 45%;
+    background-color: rgb(70, 40, 120);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.graph-placeholder p {
+    color: white;
+    font-weight: bold;
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Frosty Tix - Launchpad</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="launchpad.css">
+    <script src="https://accounts.google.com/gsi/client" defer></script>
+  </head>
+  <body>
+      <div class="popupOverlay" id="boardPop">
+        <div class="popup" id="boardPopup">
+            <h3>New Board</h3>
+            <label>Board Name</label>
+            <input type="text" placeholder="Board Name" id="board-name-input">
+
+            <label class="checkbox-label">
+                <input type="checkbox" id="invite-domain-checkbox">
+                Invite everyone on my domain
+            </label>
+
+            <label>Invite by Email</label>
+            <textarea placeholder="Enter emails, separated by commas" id="board-invite-emails-input"></textarea>
+
+            <div>
+                <button id="board-cancel-button">Cancel</button>
+                <button id="board-create-button">Create</button>
+            </div>
+        </div>
+    </div>
+
+      <div class="popupOverlay" id="joinPop">
+        <div class="popup" id="joinPopup">
+            <h3>Join Board</h3>
+            <label>Enter Code</label>
+            <input type="text" placeholder="e.g. 4821" id="join-code-input" maxlength="6">
+            <div>
+                <button id="join-cancel-button">Cancel</button>
+                <button id="join-submit-button">Join</button>
+            </div>
+        </div>
+    </div>
+
+      <div class="popupOverlay" id="invitePop">
+        <div class="popup" id="invitePopup">
+            <h3>Board Invite</h3>
+            <p id="invite-board-title"></p>
+            <div>
+                <button id="invite-decline-button">Decline</button>
+                <button id="invite-accept-button">Accept</button>
+            </div>
+        </div>
+    </div>
+
+      <div class="launchpad-container">
+          <div class="welcome-corner">
+              <h1 class="welcome-message" id="welcome-message">Welcome</h1>
+              <button class="create-board-button" id="create-board-button">Create New Board</button>
+          </div>
+
+          <button class="login-button" id="login-button">Login with Google</button>
+
+          <div class="boards-box" id="boards-box">
+              <h4>My Boards</h4>
+              <ul class="boards-list" id="boards-list">
+                  <li class="empty-state">No boards yet — create one to get started!</li>
+              </ul>
+          </div>
+
+          <div class="invites-box" id="invites-box">
+              <h4>Invites</h4>
+              <ul class="invites-list" id="invites-list">
+                  <!-- invites will be populated here once the backend is wired up -->
+              </ul>
+              <button class="join-code-button" id="join-code-button">Join with Code</button>
+          </div>
+
+          <div class="graph-placeholder" id="graph-placeholder">
+              <p>Graph goes here</p>
+          </div>
+      </div>
+
+    <script type="module" src="/src/launchpad.js"></script>
+  </body>
+</html>
