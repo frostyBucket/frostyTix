@@ -1,6 +1,6 @@
 // TODO: point this at wherever the Spring Boot backend actually runs
 // (defaults to Spring Boot's default local port).
-export const BACKEND_URL = "http://localhost:8080";
+export const BACKEND_URL = "https://frostylabs-backend-650606721572.us-central1.run.app";
 
 // TODO: fill in one of the values from your api.keys config. The backend
 // rejects any request missing a valid X-API-Key header (see
