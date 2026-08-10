@@ -57,6 +57,25 @@ h4 {
     color: white;
 }
 
+.user-list {
+    list-style: none;
+    margin: 8px 0 0 0;
+    padding: 0;
+}
+
+.user-list li {
+    color: white;
+    font-size: 90%;
+    padding: 6px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-list .empty-state {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 .sidebar {
     bottom: 1%;
     left: 1%;
@@ -252,6 +271,18 @@ h4 {
 
 .actual-ticket-container.drag-over {
     background-color: rgb(55, 55, 55);
+}
+
+#completed-container {
+    background-color: rgb(25, 25, 25);
+}
+
+#completed-container.drag-over {
+    background-color: rgb(40, 40, 40);
+}
+
+#completed-container .ticket-card {
+    cursor: default;
 }
 
 .ticket-title {

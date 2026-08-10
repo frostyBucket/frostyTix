@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderBoards([]);
         renderInvites([]);
+        graphPlaceholderText.textContent = "Graph goes here";
     }
 
     // On launch, restore a saved session instead of making the user log in
@@ -178,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderBoards(boards) {
         boardsList.innerHTML = '';
+        populateBoardRatioSelect(boards);
 
         if (!boards || boards.length === 0) {
             var emptyItem = document.createElement('li');
@@ -191,6 +193,68 @@ document.addEventListener("DOMContentLoaded", () => {
             addBoardListItem(board);
         });
     }
+
+    // ----- Board progress dropdown (fills the space where a real graph -----
+    // ----- will eventually go) -----
+
+    const boardRatioSelect = document.getElementById("board-ratio-select");
+    const graphPlaceholderText = document.getElementById("graph-placeholder-text");
+
+    function isCompleted(ticket) {
+        var normalized = (ticket.completion || "").toLowerCase();
+        return normalized.indexOf("complet") !== -1 || normalized === "done";
+    }
+
+    function populateBoardRatioSelect(boards) {
+        var previousValue = boardRatioSelect.value;
+        boardRatioSelect.innerHTML = '';
+
+        var placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = 'View board progress...';
+        boardRatioSelect.appendChild(placeholderOption);
+
+        (boards || []).forEach((board) => {
+            var option = document.createElement('option');
+            option.value = board.id;
+            option.textContent = board.title;
+            boardRatioSelect.appendChild(option);
+        });
+
+        // Keep the current selection across a refresh, as long as that
+        // board still exists in the new list.
+        var stillExists = Array.from(boardRatioSelect.options).some((opt) => opt.value === previousValue);
+        boardRatioSelect.value = stillExists ? previousValue : '';
+    }
+
+    boardRatioSelect.addEventListener("change", () => {
+        var boardId = boardRatioSelect.value;
+
+        if (!boardId) {
+            graphPlaceholderText.textContent = "Graph goes here";
+            return;
+        }
+
+        fetch(BACKEND_URL + "/tix/get-tix", {
+            method: "POST",
+            headers: apiHeaders(),
+            body: JSON.stringify({ id: Number(boardId) }),
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error("Failed to load board progress, status " + res.status);
+            }
+            return res.json();
+        })
+        .then((tickets) => {
+            var completedCount = tickets.filter(isCompleted).length;
+            graphPlaceholderText.textContent = completedCount + " / " + tickets.length + " tickets completed";
+        })
+        .catch((err) => {
+            console.error("Failed to load board progress:", err);
+            graphPlaceholderText.textContent = "Couldn't load progress";
+        });
+    });
 
     // The actual "what boards does this user have" call - queries the
     // backend directly instead of relying on stale data cached on the user.

@@ -200,6 +200,20 @@
     margin-right: 6px;
 }
 
+.board-ratio-select {
+    position: absolute;
+    bottom: 50%;
+    right: 2%;
+    width: 45%;
+    border-radius: 30px;
+    text-align: center;
+    padding: 2%;
+    font-weight: bold;
+    background-color: rgb(30, 30, 30);
+    color: white;
+    border: thin solid rgba(242, 242, 242, 0.39);
+}
+
 .graph-placeholder {
     position: absolute;
     bottom: 3%;

@@ -32,6 +32,14 @@
     "vite": "^5.4.21"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "@stomp/stompjs": "^7.3.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "sockjs-client": "^1.6.1"
+  },
+  "allowScripts": {
+    "@stomp/stompjs@7.3.0": true,
+    "sockjs-client@1.6.1": true,
+    "electron-winstaller@5.4.4": true,
+    "esbuild@0.21.5": true
   }
 }

@@ -28,6 +28,8 @@
 
 import './index.css';
 import { BACKEND_URL, apiHeaders, loadSession } from './apiConfig.js';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 console.log(
   '👋 This message is being logged by "renderer.js", included via Vite',
@@ -65,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const backButton = document.getElementById("back-button");
 
     backButton.addEventListener("click", (e) => {
+        stompClient.deactivate();
         window.location.href = "index.html";
     });
 
@@ -79,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const assignedToInput = document.getElementById("assigned-to-input");
 
     const createdContainer = document.getElementById("created-container");
+    const userList = document.getElementById("user-list");
     const inProgressContainer = document.getElementById("in-progress-container");
     const completedContainer = document.getElementById("completed-container");
 
@@ -119,21 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return "created";
     }
 
-    // Shared PATCH helper - used by both drag-and-drop (completion only)
-    // and the edit popup (title/description/priority/assigned). Only send
-    // the fields that actually changed; the backend leaves anything else
-    // untouched.
-    function updateTicket(id, updates) {
-        return fetch(BACKEND_URL + "/tix/update-ticket/" + id, {
-            method: "PATCH",
-            headers: apiHeaders(),
-            body: JSON.stringify(updates),
-        })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error("Failed to update ticket, status " + res.status);
-            }
-            return res.json();
+    // Shared publish helper - every mutation goes out over the socket now;
+    // the confirmed result comes back through the /topic/board subscription
+    // above rather than a direct response, so these are fire-and-forget.
+    function publishToBoard(mappingPath, payload) {
+        stompClient.publish({
+            destination: "/app/" + mappingPath + "/" + boardIdNumber,
+            body: JSON.stringify(payload),
         });
     }
 
@@ -157,7 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
         var newTick = document.createElement('div');
         newTick.classList.add('ticket-card', 'priority-' + ticket.priority.toLowerCase());
         newTick.dataset.id = String(ticket.id);
-        newTick.draggable = true;
+
+        // Frontend-only rule: once a ticket lands in Completed, it can't be
+        // dragged back out. Not enforced server-side on purpose - someone
+        // editing a ticket's own status directly (rather than just spinning
+        // up a new one) has earned the ability to change it.
+        var isLocked = containerForCompletion(ticket.completion) === completedContainer;
+        newTick.draggable = !isLocked;
 
         var newTitle = document.createElement('p');
         newTitle.classList.add('ticket-title');
@@ -201,6 +203,41 @@ document.addEventListener("DOMContentLoaded", () => {
         containerForCompletion(ticket.completion).appendChild(newTick);
     }
 
+    function clearBoard() {
+        createdContainer.innerHTML = '';
+        inProgressContainer.innerHTML = '';
+        completedContainer.innerHTML = '';
+    }
+
+    // Every socket broadcast (and the initial REST load) sends the board's
+    // complete, current ticket list rather than a single diff - simplest
+    // way to guarantee every connected client's view matches the server,
+    // no matter who triggered the change or what it was.
+    function renderAllTickets(tickets) {
+        clearBoard();
+        tickets.forEach(renderTicketCard);
+    }
+
+    // Driven entirely by PresenceService's broadcasts - no local state to
+    // maintain here, just render whatever the server says is currently true.
+    function renderOnlineUsers(users) {
+        userList.innerHTML = '';
+
+        if (!users || users.length === 0) {
+            var emptyItem = document.createElement('li');
+            emptyItem.classList.add('empty-state');
+            emptyItem.textContent = "No one else here";
+            userList.appendChild(emptyItem);
+            return;
+        }
+
+        users.forEach((userName) => {
+            var item = document.createElement('li');
+            item.textContent = userName;
+            userList.appendChild(item);
+        });
+    }
+
     function loadTickets() {
         fetch(BACKEND_URL + "/tix/get-tix", {
             method: "POST",
@@ -214,12 +251,41 @@ document.addEventListener("DOMContentLoaded", () => {
             return res.json();
         })
         .then((tickets) => {
-            tickets.forEach(renderTicketCard);
+            renderAllTickets(tickets);
         })
         .catch((err) => {
             console.error("Failed to load tickets:", err);
         });
     }
+
+    // Live collaboration - subscribing here means every create/update/delete
+    // (including this tab's own, once those switch to socket publishes
+    // below) comes back through this single callback. One rendering path
+    // for everyone, regardless of who made the change.
+    const stompClient = new Client({
+        webSocketFactory: () => new SockJS(BACKEND_URL + "/topic/board"),
+        connectHeaders: {
+            // Validated server-side by StompAuthInterceptor on CONNECT.
+            Authorization: "Bearer " + session.token,
+        },
+        reconnectDelay: 5000,
+        onConnect: () => {
+            stompClient.subscribe("/topic/board/" + boardIdNumber, (message) => {
+                var tickets = JSON.parse(message.body);
+                renderAllTickets(tickets);
+            });
+
+            stompClient.subscribe("/topic/board/" + boardIdNumber + "/presence", (message) => {
+                var onlineUsers = JSON.parse(message.body);
+                renderOnlineUsers(onlineUsers);
+            });
+        },
+        onStompError: (frame) => {
+            console.error("STOMP error:", frame.headers['message'], frame.body);
+        },
+    });
+
+    stompClient.activate();
 
     allContainers.forEach((container) => {
         container.addEventListener("dragover", (e) => {
@@ -237,12 +303,15 @@ document.addEventListener("DOMContentLoaded", () => {
             var draggedId = e.dataTransfer.getData("text/plain");
             var draggedTicket = document.querySelector('[data-id="' + draggedId + '"]');
             if (draggedTicket) {
+                // Instant local feedback for the dragging user - the
+                // broadcast that arrives shortly after will fully re-render
+                // and confirm (or correct) this.
                 container.appendChild(draggedTicket);
 
-                updateTicket(draggedId, { completion: completionForContainer(container) })
-                    .catch((err) => {
-                        console.error("Failed to save ticket move:", err);
-                    });
+                publishToBoard("socket.updateTicket", {
+                    id: Number(draggedId),
+                    completion: completionForContainer(container),
+                });
             }
         });
     });
@@ -251,28 +320,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!currentEditTicket) return;
 
         var ticketId = currentEditTicket.dataset.id;
-        var newPriority = editPriorityInput.value;
 
-        updateTicket(ticketId, {
+        publishToBoard("socket.updateTicket", {
+            id: Number(ticketId),
             title: editTitleInput.value,
             description: editDescriptionInput.value,
-            priority: newPriority,
+            priority: editPriorityInput.value,
             assigned: editAssignedToInput.value,
-        })
-        .then((updated) => {
-            currentEditTicket.querySelector('.ticket-title').textContent = updated.title;
-            currentEditTicket.querySelector('.ticket-desc').textContent = updated.description;
-            currentEditTicket.querySelector('.ticket-priority-badge').textContent = updated.priority;
-            currentEditTicket.querySelector('.ticket-assigned').textContent = updated.assigned;
-
-            currentEditTicket.classList.remove('priority-high', 'priority-medium', 'priority-low');
-            currentEditTicket.classList.add('priority-' + updated.priority.toLowerCase());
-
-            closeEditPopup();
-        })
-        .catch((err) => {
-            console.error("Failed to save ticket:", err);
         });
+
+        // Optimistic close - the confirmed update comes back through the
+        // board subscription and re-renders everything, including this card.
+        closeEditPopup();
     });
 
     deleteButton.addEventListener("click", (e) => {
@@ -280,20 +339,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         var ticketId = currentEditTicket.dataset.id;
 
-        fetch(BACKEND_URL + "/tix/delete-ticket/" + ticketId, {
-            method: "DELETE",
-            headers: apiHeaders(),
-        })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error("Failed to delete ticket, status " + res.status);
-            }
-            currentEditTicket.remove();
-            closeEditPopup();
-        })
-        .catch((err) => {
-            console.error("Failed to delete ticket:", err);
-        });
+        // ASSUMPTION: deleteTicket now takes a Tix directly too, using just
+        // the id field. Adjust if the actual signature is different.
+        publishToBoard("socket.deleteTicket", { id: Number(ticketId) });
+
+        closeEditPopup();
     });
 
     editCancelButton.addEventListener("click", (e) => {
@@ -306,32 +356,19 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        fetch(BACKEND_URL + "/tix/new-ticket", {
-            method: "POST",
-            headers: apiHeaders(),
-            body: JSON.stringify({
-                title: title,
-                description: descriptionInput.value,
-                assigned: assignedToInput.value,
-                priority: priorityInput.value,
-                boardKey: boardIdNumber,
-            }),
-        })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error("Failed to create ticket, status " + res.status);
-            }
-            return res.json();
-        })
-        .then((newTicket) => {
-            renderTicketCard(newTicket);
-            titleInput.value = '';
-            descriptionInput.value = '';
-            ticketPop.style.display = "none";
-        })
-        .catch((err) => {
-            console.error("Failed to create ticket:", err);
+        // ASSUMPTION: newTix now takes a Tix directly (matching
+        // updateTicket's existing pattern) rather than BoardUpdate. If the
+        // actual signature differs, this payload shape will need adjusting.
+        publishToBoard("socket.createTix", {
+            title: title,
+            description: descriptionInput.value,
+            assigned: assignedToInput.value,
+            priority: priorityInput.value,
         });
+
+        titleInput.value = '';
+        descriptionInput.value = '';
+        ticketPop.style.display = "none";
     });
 
     newTicketButton.addEventListener("click", (e) => {
@@ -399,5 +436,52 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Fills both the New Ticket and Edit Ticket "Assigned To" dropdowns with
+    // everyone who actually has access to this board (owner + members),
+    // fetched fresh rather than trusted from anything cached.
+    function populateAssignedToOptions(members) {
+        [assignedToInput, editAssignedToInput].forEach((select) => {
+            select.innerHTML = '';
+
+            var noneOption = document.createElement('option');
+            noneOption.textContent = 'None';
+            select.appendChild(noneOption);
+
+            members.forEach((member) => {
+                var option = document.createElement('option');
+                option.textContent = member;
+                select.appendChild(option);
+            });
+        });
+    }
+
+    function loadBoardMembers() {
+        fetch(BACKEND_URL + "/tix/my-boards", {
+            method: "GET",
+            headers: apiHeaders(),
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error("Failed to load board members, status " + res.status);
+            }
+            return res.json();
+        })
+        .then((boards) => {
+            var board = boards.find((b) => b.id === boardIdNumber);
+            if (!board) {
+                return;
+            }
+
+            // Owner isn't included in the users[] array by default, but
+            // they're obviously assignable too.
+            var members = Array.from(new Set([board.owner].concat(board.users || [])));
+            populateAssignedToOptions(members);
+        })
+        .catch((err) => {
+            console.error("Failed to load board members:", err);
+        });
+    }
+
     loadTickets();
+    loadBoardMembers();
 });
