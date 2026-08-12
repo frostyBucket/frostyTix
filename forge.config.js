@@ -12,7 +12,8 @@ module.exports = {
           name: 'frostyTix'
         },
         prerelease: false,
-        draft: true
+        draft: true,
+        authToken: process.env.GITHUB_TOKEN
       }
     }
   ],

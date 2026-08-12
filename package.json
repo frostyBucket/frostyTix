@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@stomp/stompjs": "^7.3.0",
+    "dotenv": "^17.4.2",
     "electron-squirrel-startup": "^1.0.1",
     "rpmbuild": "^0.0.23",
     "sockjs-client": "^1.6.1"
