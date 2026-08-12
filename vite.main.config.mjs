@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite';
 
-// https://vitejs.dev/config
 export default defineConfig({
-  // ...your existing config...
-  define: {
-    global: 'globalThis',
+  resolve: {
+    // Some deps work in both browser and Node - this tells Vite to build
+    // them in Node mode, since this is the main process.
+    browserField: false,
+    conditions: ['node'],
+    mainFields: ['module', 'jsnext:main', 'jsnext'],
   },
 });
