@@ -5,7 +5,7 @@ export const BACKEND_URL = "https://frostylabs-backend-650606721572.us-central1.
 // TODO: fill in one of the values from your api.keys config. The backend
 // rejects any request missing a valid X-API-Key header (see
 // ApiKeyAuthFilter), so this has to be a real key, not a placeholder.
-export const API_KEY = [REDACTED];
+export const API_KEY = '"6f9e2c0d9e6b4f1f9c7a"'; // I'm well aware that this value should be in a .env file, I just don't really care as this project is only for demo purposes
 const SESSION_KEY = "frostyTixSession";
 
 export function apiHeaders() {
