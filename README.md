@@ -10,9 +10,6 @@ I figured it's time to demonstrate some full stack skills on this account, so I 
 	and I knew I'd have an easy time getting the hang of it since I already 
 	had HTML and NodeJS in my toolbelt.
 	
-	My initial plan was to build this using the .NET framework, but it occurred to me that limiting 
-	part of your portfolio to Windows users isn't a very good idea (crazy revelation, I know).
-	
 	I made it a point to write out a basic draft before letting Claude 
 	do any work on it, since having it mimic the way I code made collaboration a lot more simple
 
