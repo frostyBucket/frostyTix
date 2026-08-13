@@ -270,15 +270,15 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         reconnectDelay: 5000,
         onConnect: () => {
+            stompClient.subscribe("/topic/board/" + boardIdNumber + "/presence", (message) => {
+                var onlineUsers = JSON.parse(message.body);
+                renderOnlineUsers(onlineUsers);
+            });
             stompClient.subscribe("/topic/board/" + boardIdNumber, (message) => {
                 var tickets = JSON.parse(message.body);
                 renderAllTickets(tickets);
             });
 
-            stompClient.subscribe("/topic/board/" + boardIdNumber + "/presence", (message) => {
-                var onlineUsers = JSON.parse(message.body);
-                renderOnlineUsers(onlineUsers);
-            });
         },
         onStompError: (frame) => {
             console.error("STOMP error:", frame.headers['message'], frame.body);
