@@ -474,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Owner isn't included in the users[] array by default, but
             // they're obviously assignable too.
-            var members = Array.from(new Set([board.owner].concat(board.users || [])));
+            var members = Array.from(new Set([board.owner].concat(board.userList || [])));
             populateAssignedToOptions(members);
         })
         .catch((err) => {
