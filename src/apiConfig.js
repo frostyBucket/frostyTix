@@ -1,13 +1,11 @@
 // TODO: point this at wherever the Spring Boot backend actually runs
 // (defaults to Spring Boot's default local port).
-import dotenv from 'dotenv';
-dotenv.config();
 export const BACKEND_URL = "https://frostylabs-backend-650606721572.us-central1.run.app";
 
 // TODO: fill in one of the values from your api.keys config. The backend
 // rejects any request missing a valid X-API-Key header (see
 // ApiKeyAuthFilter), so this has to be a real key, not a placeholder.
-export const API_KEY = '"6f9e2c0d9e6b4f1f9c7a"';
+export const API_KEY = "6f9e2c0d9e6b4f1f9c7a";
 const SESSION_KEY = "frostyTixSession";
 
 export function apiHeaders() {
