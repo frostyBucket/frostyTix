@@ -1,6 +1,12 @@
 # frostyTix
 
-I figured it's time to demonstrate some full stack skills on this account, so I went ahead and built a ticketing system! Read below if you're interested in my thought process throughout this project
+I figured it's time to demonstrate some full stack skills on this account, so I went ahead and built a ticketing system! 
+
+You can download a fully functional version for Windows [here](https://frostylabs.co/apps/frostytix.exe)
+
+Versions for Mac and Linux are soon to some as well!
+
+Read below if you're interested in my thought process throughout this project
 
 **The overall pipeline looks like this:**
 
