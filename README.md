@@ -1,4 +1,5 @@
 # frostyTix
+* NOTE: The database associated with this project no longer exists, rendering it inoperable. Apologies to anyone who might've wanted to try this for themselves
 
 I figured it's time to demonstrate some full stack skills on this account, so I went ahead and built a ticketing system! 
 
